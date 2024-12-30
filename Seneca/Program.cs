@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Seneca.Models.Entities;
 using Seneca.Services;
@@ -12,6 +13,13 @@ builder.Services.AddDbContext<DatabaseContext>(a =>
     a.UseSqlServer(builder.Configuration.GetConnectionString("SQLConnection"));
 });
 
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(opt =>
+    {
+        opt.LoginPath = "/Home/Login";
+        opt.ExpireTimeSpan = TimeSpan.FromMinutes(20);
+    });
+
 builder.Services.AddScoped<IUserService, UserService>();
 
 var app = builder.Build();
@@ -24,6 +32,7 @@ if (!app.Environment.IsDevelopment())
 app.UseStaticFiles();
 
 app.UseRouting();
+app.UseAuthentication();
 
 app.UseAuthorization();
 

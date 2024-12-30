@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Seneca.Models;
+using Seneca.Models.Entities;
 using System.Diagnostics;
+using System.Security.Claims;
 
 namespace Seneca.Controllers
 {
@@ -15,6 +17,16 @@ namespace Seneca.Controllers
 
         public IActionResult Index()
         {
+            ClaimsPrincipal claimUser = HttpContext.User;
+
+            if(!claimUser.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Login", "Home");
+            }
+
+            ViewData["name"] = claimUser.Claims.Where(c => c.Type == ClaimTypes.Name)
+                .Select(c => c.Value).SingleOrDefault();
+
             return View();
         }
 
@@ -33,7 +45,6 @@ namespace Seneca.Controllers
         {
             return View();
         }
-
 
         public IActionResult Register()
         {
