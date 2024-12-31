@@ -20,6 +20,7 @@ public partial class Usuario
     [Required(ErrorMessage = "El campo es obligatorio.")]
     [Display(Name = "Contraseña")]
     public string? Contrasenia { get; set; }
+    public byte? Estado { get; set; }
 
-    public virtual ICollection<Correo> Correos { get; set; } = new List<Correo>();
+    public virtual ICollection<Log> Logs { get; set; } = new List<Log>();
 }

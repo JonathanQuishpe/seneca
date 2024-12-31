@@ -1,3 +1,6 @@
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Seneca.Models;
 using Seneca.Models.Entities;
@@ -15,25 +18,20 @@ namespace Seneca.Controllers
             _logger = logger;
         }
 
+        [Authorize]
         public IActionResult Index()
         {
             ClaimsPrincipal claimUser = HttpContext.User;
 
-            if(!claimUser.Identity.IsAuthenticated)
-            {
-                return RedirectToAction("Login", "Home");
-            }
-
             ViewData["name"] = claimUser.Claims.Where(c => c.Type == ClaimTypes.Name)
+                .Select(c => c.Value).SingleOrDefault();
+
+            ViewData["id"] = claimUser.Claims.Where(c => c.Type == "id")
                 .Select(c => c.Value).SingleOrDefault();
 
             return View();
         }
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
@@ -41,12 +39,25 @@ namespace Seneca.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
+        [RedirectIfAuthenticated]
         public IActionResult Login()
         {
             return View();
         }
 
         public IActionResult Register()
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> SignOutSession()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+            return RedirectToAction("Login");
+        }
+
+        public IActionResult RecoverPassword()
         {
             return View();
         }

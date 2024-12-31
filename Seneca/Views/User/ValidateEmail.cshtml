@@ -1,0 +1,45 @@
+﻿@model Seneca.Models.Entities.Usuario
+
+@{
+    ViewData["Title"] = "Validar cuenta";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Seneca</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Seneca.styles.css" asp-append-version="true" />
+</head>
+<div class="container">
+    <h4>Validar cuenta</h4>
+    <hr />
+    <div class="row">
+        <div class="col-md-12">
+            @if (Model.Estado == 0)
+            {
+                <div class="alert alert-danger" role="alert">
+                    <strong>Tu cuenta aún no está validada.</strong> Por favor, verifica tus datos y sigue las instrucciones enviadas a tu correo electrónico.
+                </div>
+                <form asp-controller="User" asp-action="ValidateEmail" method="post">
+                    <input type="hidden" asp-for="Id" />
+                    <div class="form-group">
+                        <input type="submit" value="Validar" class="btn btn-success" />
+                    </div>
+                </form>
+            }
+            else
+            {
+                <div class="alert alert-success" role="alert">
+                    <strong>¡Cuenta validada correctamente!</strong> Ahora puedes acceder a todas las funcionalidades.
+                </div>
+                <div>
+                    <a asp-controller="Home" asp-action="Login">Iniciar Sesión</a>
+                </div>
+            }
+        </div>
+    </div>
+</div>

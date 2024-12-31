@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Seneca.Models.Entities;
 using Seneca.Services;
+using Seneca.Utilities;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +22,8 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     });
 
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.Configure<MailjetSettings>(builder.Configuration.GetSection("Mailjet"));
+builder.Services.AddScoped<MailJetService>();
 
 var app = builder.Build();
 
